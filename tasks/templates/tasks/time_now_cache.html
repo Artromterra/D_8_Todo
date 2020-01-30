@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title % }Кэшированное Время{% endblock %}
+
+
+{% block main_content %}
+<div class="mt-3">
+  <h1>Текущее время</h1>
+  <h4>
+    {{ timenow }}
+  </h4>
+</div>
+<div class="mt-3">
+  <h1>Кешированное время</h1>
+  <h4>
+    {{ cachedtime }}
+  </h4>
+</div>
+
+{% endblock %}
