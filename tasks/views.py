@@ -2,7 +2,9 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from tasks.models import TodoItem, Category, Priority
-
+from django.views.generic.base import View
+from datetime import datetime
+from django.core.cache import cache
 
 def index(request):
 
@@ -81,3 +83,23 @@ class TaskListView(ListView):
 class TaskDetailsView(DetailView):
     model = TodoItem
     template_name = "tasks/details.html"
+    
+# Получаем текущее время
+def get_time():
+	return datetime.now().strftime("%A, %d  %B %Y // %H:%M:%S")
+
+# функция проверяет есть ли в кэше данные с ключом "cached_time", если нет до добавляет
+def get_cached_time():
+	if not cache.get('cached_time'):
+		cache.set('cached_time', datetime.now().strftime("%A, %d  %B %Y // %H:%M:%S"), 300)
+	return cache.get('cached_time')
+
+# вью с отображением текущего и кэшированного времени
+class CachedTimeView(View):
+	template = "tasks/time_now_cache.html"
+	def get(self, request):
+		context = {}
+		context['timenow'] = get_time()
+		context['cachedtime'] = get_cached_time()
+		return render(request, self.template, context=context)
+
